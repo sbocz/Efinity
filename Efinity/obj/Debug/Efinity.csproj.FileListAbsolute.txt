@@ -1,0 +1,6 @@
+D:\workspace\Efinity\Efinity\bin\Debug\Efinity.exe.config
+D:\workspace\Efinity\Efinity\bin\Debug\Efinity.exe
+D:\workspace\Efinity\Efinity\bin\Debug\Efinity.pdb
+D:\workspace\Efinity\Efinity\obj\Debug\Efinity.csprojResolveAssemblyReference.cache
+D:\workspace\Efinity\Efinity\obj\Debug\Efinity.exe
+D:\workspace\Efinity\Efinity\obj\Debug\Efinity.pdb
