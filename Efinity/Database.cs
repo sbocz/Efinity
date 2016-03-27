@@ -22,13 +22,12 @@ namespace Efinity
 			//Create Application Table
 			Application = new DataTable();
 			Application.Columns.Add("ApplicationName", typeof(string));
-			Application.Columns.Add("HashKey", typeof(string));
 
 			//Approved applications
-			Application.Rows.Add("Skype", Hash.ComputeHash("Skype", null));
-			Application.Rows.Add("App2020 Store", Hash.ComputeHash("App2020 Store", null));
-			Application.Rows.Add("FireFox", Hash.ComputeHash("FireFox", null));
-			Application.Rows.Add("Flappy Bird", Hash.ComputeHash("Flappy Bird", null));
+			Application.Rows.Add("Skype");
+			Application.Rows.Add("App2020 Store");
+			Application.Rows.Add("FireFox");
+			Application.Rows.Add("Flappy Bird");
 
 
 			//Create Version Table
@@ -38,25 +37,25 @@ namespace Efinity
 			Version.Columns.Add("HashKey", typeof(string));
 
 			//Supported Versions
-			Version.Rows.Add("Skype", 4, Hash.ComputeHash("Skype4", null));
-			Version.Rows.Add("Skype", 5, Hash.ComputeHash("Skype5", null));
-			Version.Rows.Add("Skype", 6, Hash.ComputeHash("Skype6", null));
-			Version.Rows.Add("Skype", 7, Hash.ComputeHash("Skype7", null));
+			Version.Rows.Add("Skype", 4, Hash.ComputeHash("Skype4Data", null));
+			Version.Rows.Add("Skype", 5, Hash.ComputeHash("Skype5Data", null));
+			Version.Rows.Add("Skype", 6, Hash.ComputeHash("Skype6Data", null));
+			Version.Rows.Add("Skype", 7, Hash.ComputeHash("Skype7Data", null));
 
-			Version.Rows.Add("App2020 Store", 12, Hash.ComputeHash("App2020 Store12", null));
-			Version.Rows.Add("App2020 Store", 13, Hash.ComputeHash("App2020 Store13", null));
-			Version.Rows.Add("App2020 Store", 14, Hash.ComputeHash("App2020 Store14", null));
+			Version.Rows.Add("App2020 Store", 12, Hash.ComputeHash("App2020 Store12Data", null));
+			Version.Rows.Add("App2020 Store", 13, Hash.ComputeHash("App2020 Store13Data", null));
+			Version.Rows.Add("App2020 Store", 14, Hash.ComputeHash("App2020 Store14Data", null));
 
-			Version.Rows.Add("FireFox", 39, Hash.ComputeHash("FireFox39", null));
-			Version.Rows.Add("FireFox", 40, Hash.ComputeHash("FireFox40", null));
-			Version.Rows.Add("FireFox", 41, Hash.ComputeHash("FireFox41", null));
-			Version.Rows.Add("FireFox", 42, Hash.ComputeHash("FireFox42", null));
-			Version.Rows.Add("FireFox", 43, Hash.ComputeHash("FireFox43", null));
-			Version.Rows.Add("FireFox", 44, Hash.ComputeHash("FireFox44", null));
-			Version.Rows.Add("FireFox", 45, Hash.ComputeHash("FireFox45", null));
+			Version.Rows.Add("FireFox", 39, Hash.ComputeHash("FireFox39Data", null));
+			Version.Rows.Add("FireFox", 40, Hash.ComputeHash("FireFox40Data", null));
+			Version.Rows.Add("FireFox", 41, Hash.ComputeHash("FireFox41Data", null));
+			Version.Rows.Add("FireFox", 42, Hash.ComputeHash("FireFox42Data", null));
+			Version.Rows.Add("FireFox", 43, Hash.ComputeHash("FireFox43Data", null));
+			Version.Rows.Add("FireFox", 44, Hash.ComputeHash("FireFox44Data", null));
+			Version.Rows.Add("FireFox", 45, Hash.ComputeHash("FireFox45Data", null));
 
-			Version.Rows.Add("Flappy Bird", 1, Hash.ComputeHash("Flappy Bird1", null));
-			Version.Rows.Add("Flappy Bird", 2, Hash.ComputeHash("Flappy Bird2", null));
+			Version.Rows.Add("Flappy Bird", 1, Hash.ComputeHash("Flappy Bird1Data", null));
+			Version.Rows.Add("Flappy Bird", 2, Hash.ComputeHash("Flappy Bird2Data", null));
 		}
 	}
 }

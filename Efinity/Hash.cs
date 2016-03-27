@@ -11,30 +11,21 @@ namespace Efinity
 	{
 		/// <summary>
 		/// Gets the resulting hash string from the text entered and salt bytes supplied.
+		/// Hashstring returned includes the saltbytes appended at the end.
 		/// </summary>
-		/// <param name="plainText"></param>
-		/// <param name="salt">If null, random salt generated</param>
+		/// <param name="textData"> Data to be hashed. </param>
+		/// <param name="salt"> Bytes for salting data. If null, random salt generated</param>
 		/// <returns></returns>
-		public static string ComputeHash(string plainText, byte[] salt = null)
+		public static string ComputeHash(string textData, byte[] salt = null)
 		{
-			int minSaltLength = 4, maxSaltLength = 8;
-
+			
+			//Get salt if it is not provided
 			byte[] saltBytes = null;
-			if (salt != null)
-			{
-				saltBytes = salt;
-			}
-			else
-			{
-				Random r = new Random();
-				int saltLength = r.Next(minSaltLength, maxSaltLength);
-				saltBytes = new byte[saltLength];
-				RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-				rng.GetNonZeroBytes(saltBytes);
-				rng.Dispose();
-			}
-
-			byte[] plainData = Encoding.UTF8.GetBytes(plainText);
+			saltBytes = salt ?? GetRandomSalt(4, 8);
+			
+			byte[] plainData = Encoding.UTF8.GetBytes(textData);
+			
+			//byte array for data + salt
 			byte[] plainDataWithSalt = new byte[plainData.Length + saltBytes.Length];
 
 			for (int i = 0; i < plainData.Length; i++)
@@ -43,13 +34,13 @@ namespace Efinity
 			for (int i = 0; i < saltBytes.Length; i++)
 				plainDataWithSalt[plainData.Length + i] = saltBytes[i];
 
+			//byte array for hashed data + salt
 			byte[] hashValue = null;
-
 			SHA256Managed sha = new SHA256Managed();
 			hashValue = sha.ComputeHash(plainDataWithSalt);
 			sha.Dispose();
 			
-
+			//Hash value + salt bytes
 			byte[] result = new byte[hashValue.Length + saltBytes.Length];
 			for (int i = 0; i < hashValue.Length; i++)
 				result[i] = hashValue[i];
@@ -57,20 +48,34 @@ namespace Efinity
 			for (int i = 0; i < saltBytes.Length; i++)
 				result[hashValue.Length + i] = saltBytes[i];
 
+			//Get string to return based on resulting bytes
 			return Convert.ToBase64String(result);
 		}
 
-		public static bool Confirm(string plainText, string hashValue)
+		private static byte[] GetRandomSalt(int minSaltLength, int maxSaltLength)
+		{
+			Random r = new Random();
+			int saltLength = r.Next(minSaltLength, maxSaltLength);
+			byte[] saltBytes = new byte[saltLength];
+			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+			rng.GetNonZeroBytes(saltBytes);
+			rng.Dispose();		//Dispose of object for security reasons
+			return saltBytes;
+		}
+
+		public static bool Confirm(string textData, string hashValue)
 		{
 			byte[] hashBytes = Convert.FromBase64String(hashValue);
 			int hashSize = 32;	//bytes in SHA 256
 
+			//Gets the saltbytes that would've been appended using out hash function
 			byte[] saltBytes = new byte[hashBytes.Length - hashSize];
 
 			for (int i = 0; i < saltBytes.Length; i++)
 				saltBytes[i] = hashBytes[hashSize + i];
 
-			string newHash = ComputeHash(plainText, saltBytes);
+			//Get hash from data to confirm it matches
+			string newHash = ComputeHash(textData, saltBytes);
 
 			return (hashValue == newHash);
 		}
