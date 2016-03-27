@@ -9,7 +9,13 @@ namespace Efinity
 {
 	class Hash
 	{
-		public static string ComputeHash(string plainText, byte[] salt)
+		/// <summary>
+		/// Gets the resulting hash string from the text entered and salt bytes supplied.
+		/// </summary>
+		/// <param name="plainText"></param>
+		/// <param name="salt">If null, random salt generated</param>
+		/// <returns></returns>
+		public static string ComputeHash(string plainText, byte[] salt = null)
 		{
 			int minSaltLength = 4, maxSaltLength = 8;
 
