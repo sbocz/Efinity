@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Efinity
+namespace AppFinity
 {
 	class Hash
 	{
@@ -21,7 +21,7 @@ namespace Efinity
 			
 			//Get salt if it is not provided
 			byte[] saltBytes = null;
-			saltBytes = salt ?? GetRandomSalt(4, 8);
+			saltBytes = salt ?? GetRandomSalt();
 			
 			byte[] plainData = Encoding.UTF8.GetBytes(textData);
 			
@@ -52,11 +52,10 @@ namespace Efinity
 			return Convert.ToBase64String(result);
 		}
 
-		private static byte[] GetRandomSalt(int minSaltLength, int maxSaltLength)
+		private static byte[] GetRandomSalt()
 		{
 			Random r = new Random();
-			int saltLength = r.Next(minSaltLength, maxSaltLength);
-			byte[] saltBytes = new byte[saltLength];
+			byte[] saltBytes = new byte[4];	//Four bytes of salt
 			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 			rng.GetNonZeroBytes(saltBytes);
 			rng.Dispose();		//Dispose of object for security reasons

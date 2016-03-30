@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 
-namespace Efinity
+namespace AppFinity
 {
 	/// <summary>
 	/// Fake database for demo purposes

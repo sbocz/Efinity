@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efinity", "Efinity\Efinity.csproj", "{AB130C6A-8DD5-4ACE-9C7B-5CC42379441D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFinity", "Efinity\AppFinity.csproj", "{AB130C6A-8DD5-4ACE-9C7B-5CC42379441D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
