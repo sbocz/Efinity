@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AppFinity
 {
@@ -36,7 +33,8 @@ namespace AppFinity
 			byte[] plainData = Encoding.UTF8.GetBytes(textData);
 			
 			//byte array for data + salt
-			byte[] plainDataWithSalt = new byte[plainData.Length + saltBytes.Length];
+			byte[] plainDataWithSalt = new byte[plainData.Length + 
+				saltBytes.Length];
 
 			for (int i = 0; i < plainData.Length; i++)
 				plainDataWithSalt[i] = plainData[i];
