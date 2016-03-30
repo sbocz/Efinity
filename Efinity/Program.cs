@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -13,16 +14,21 @@ namespace AppFinity
 {
 	/// <summary>
 	/// Runs the demos for AppFinity. Can run either the Installation 
-	/// demo or the Launch demo.
+	/// demo or the Launch demo. Demo is run as if the device has nothing
+	/// installed on it.
 	/// </summary>
 	/// <author>
 	/// Sean Boczulak, 2016
 	/// </author>
 	class Program
 	{
+		//Use any file path you want
+		private const string HASH_FILE_PATH = @"C:\Users\Sean\Desktop\HashFile.txt";
+
 		static void Main(string[] args)
 		{
 			Database db = new Database();
+			File.Create(HASH_FILE_PATH).Close();
 			Console.WriteLine("AppFinity Launched.");
 
 			bool running = true;
@@ -49,23 +55,76 @@ namespace AppFinity
 				switch (demoType)
 				{
 					case 1:
-						InstallApplicationDemo(db);
+						WriteToHashFile(InstallApplicationDemo(db), HASH_FILE_PATH);
 						break;
 					case 2:
 						LaunchApplicationDemo(db);
 						break;
 					case 3:
-						DisplaySafeHashFile();
+						DisplayHashFile(HASH_FILE_PATH);
 						break;
 				}
 				Console.WriteLine("\nRun again?(y/n)");
 				running = Console.ReadLine() == "y";        //Repeat until user wishes to stop running apps
 			}
 		}
-		
-		private static void DisplaySafeHashFile()
+
+		/// <summary>
+		/// Read the hash file for validated apps
+		/// to be run using AppFinity.
+		/// </summary>
+		/// <param name="filePath">File to get the hashValues from.</param>
+		private static string[] ReadHashFile(string filePath)
 		{
-			throw new NotImplementedException();
+
+			List<string> hashValues = new List<string>();
+			try
+			{
+				StreamReader reader = new StreamReader(filePath);
+				string line = reader.ReadLine();
+
+				while (!string.IsNullOrEmpty(line))
+				{
+					hashValues.Add(line);
+					line = reader.ReadLine();
+				}
+				reader.Close();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception: " + e.Message);
+			}
+			return hashValues.ToArray();
+		}
+
+		/// <summary>
+		/// Writes the hash value to the hash file for safe 
+		/// applications
+		/// </summary>
+		/// <param name="toWrite">
+		/// Hash Value to write. If null nothing is written.
+		/// </param>
+		/// <param name="filePath"></param>
+		private static void WriteToHashFile(string toWrite, string filePath)
+		{
+			//Save file and backup file
+			StreamWriter writer = new StreamWriter(filePath, true);
+			if(toWrite != null)
+				writer.WriteLine(toWrite);
+			writer.Close();
+		}
+
+		/// <summary>
+		/// Display contents of hash file
+		/// </summary>
+		/// <param name="filePath"></param>
+		private static void DisplayHashFile(string filePath)
+		{
+			Console.WriteLine();
+			foreach (string s in ReadHashFile(filePath))
+			{
+				Console.WriteLine(s);
+			}
 		}
 
 		/// <summary>
@@ -74,88 +133,57 @@ namespace AppFinity
 		/// <param name="db">Database to use</param>
 		private static void LaunchApplicationDemo(Database db)
 		{
-			//bool running = true;
+			Console.WriteLine("\nEnter an application name to run:");
+			var applicationProvided = Console.ReadLine();
+			bool versionInt = false;
+			int versionProvided = 0;
+			bool applicationSafe = false;
+			//Make sure version is an integer
+			while (!versionInt)
+			{
+				try
+				{
+					Console.WriteLine("Enter the application version:");
+					versionProvided = Convert.ToInt32(Console.ReadLine());
+					versionInt = true;
+				}
+				catch (Exception)
+				{
+					versionInt = false;
+				}
+			}
 
-			////Repeat until user wishes to stop running apps
-			//while (running)
-			//{
-			//	Console.WriteLine("\nEnter an application name to run:");
-			//	var applicationProvided = Console.ReadLine();
-			//	bool versionInt = false;
-			//	int versionProvided = 0;
+			string appData = applicationProvided + versionProvided + "Data";
+			Console.WriteLine("\nComputing \"" + applicationProvided + "\" version " + versionProvided + "s hash value...");
 
-			//	//Make sure version is an integer
-			//	while (!versionInt)
-			//	{
-			//		try
-			//		{
-			//			Console.WriteLine("Enter the application version:");
-			//			versionProvided = Convert.ToInt32(Console.ReadLine());
-			//			versionInt = true;
-			//		}
-			//		catch (Exception)
-			//		{
-			//			versionInt = false;
-			//		}
-			//	}
+			//Check for application being supported
+			Console.WriteLine("Checking if \"" + applicationProvided + "\" is marked safe...");
+			foreach (string s in ReadHashFile(HASH_FILE_PATH))
+			{
+				if (Hash.Confirm(appData, s))
+				{
+					applicationSafe = true;
+					break;
+				}
+			}
 
-			//	//Check for application being supported
-			//	Console.WriteLine("\nChecking database for \"" + applicationProvided + "\"...");
-			//	bool appSupported = false;
-			//	foreach (DataRow row in db.Application.Rows)
-			//	{
-			//		if ((string)row["ApplicationName"] == applicationProvided)
-			//		{
-			//			appSupported = true;
-			//			break;
-			//		}
-			//	}
-
-			//	if (appSupported)
-			//	{
-			//		Console.WriteLine("Application supported by App2020...");
-			//		Console.WriteLine("\nGetting \"" + applicationProvided + "\"s hash value...");
-
-			//		//Check for application + version being supported
-			//		Console.WriteLine("Checking database for \"" + applicationProvided + "\"s hash value...\n");
-			//		bool versionSupported = false;
-			//		foreach (DataRow row in db.Version.Rows)
-			//		{
-			//			if ((string)row["ApplicationName"] == applicationProvided && (int)row["VersionNumber"] == versionProvided && Hash.Confirm(applicationProvided + versionProvided + "Data", (string)row["HashKey"]))
-			//			{
-			//				versionSupported = true;
-			//				break;
-			//			}
-			//		}
-			//		if (versionSupported)
-			//		{
-			//			//Success message
-			//			Console.ForegroundColor = ConsoleColor.Green;
-			//			Console.WriteLine(applicationProvided + " version " + versionProvided + " is supported by App2020");
-			//			Console.WriteLine(applicationProvided + " launched.");
-			//			Console.ResetColor();
-			//		}
-			//		else
-			//		{
-			//			//Version not supported message
-			//			Console.ForegroundColor = ConsoleColor.Red;
-			//			Console.WriteLine("Version not supported by App 2020... ");
-			//			Console.WriteLine("Launch of " + applicationProvided + " aborted.");
-			//			Console.ResetColor();
-			//		}
-			//	}
-			//	else
-			//	{
-			//		//Application not supported message
-			//		Console.ForegroundColor = ConsoleColor.Red;
-			//		Console.WriteLine("Application not supported by App 2020... ");
-			//		Console.WriteLine("Launch of " + applicationProvided + " aborted.");
-			//		Console.ResetColor();
-			//	}
-
-			//	Console.WriteLine("\nLaunch another application?(y/n)");
-			//	running = Console.ReadLine() == "y";        //Repeat until user wishes to stop running apps
-			//}
+			if (applicationSafe)
+			{
+				//Application safe message
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine(applicationProvided + " version " + versionProvided + " is marked safe...");
+				Console.WriteLine(applicationProvided + " launched.");
+				Console.ResetColor();
+			}
+			else
+			{
+				//Application not safe message
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine(applicationProvided + " version " + versionProvided + " is not marked safe...");
+				Console.WriteLine("File is either corrupt or was incorrectly installed. Please reinstall " 
+					+ applicationProvided + ". Launch aborted.");
+				Console.ResetColor();
+			}
 		}
 
 		/// <summary>
@@ -181,7 +209,7 @@ namespace AppFinity
 				}
 				catch (Exception)
 				{
-					versionInt = false;
+					versionInt = false; 
 				}
 			}
 

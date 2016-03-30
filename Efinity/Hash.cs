@@ -87,7 +87,16 @@ namespace AppFinity
 
 			//Get hash from data to confirm it matches
 			string newHash = ComputeHash(textData, saltBytes);
-
+			if (hashValue == newHash)
+			{
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine(newHash);
+				Console.ResetColor();
+			}
+			else
+			{
+				Console.WriteLine(newHash);
+			}
 			return (hashValue == newHash);
 		}
 	}
