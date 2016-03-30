@@ -7,14 +7,24 @@ using System.Threading.Tasks;
 
 namespace AppFinity
 {
+	/// <summary>
+	/// Used to confirm and compute hash signatures for files
+	/// using the SHA-2 hashing algorithm with salt. 
+	/// </summary>
+	/// <author>
+	/// Sean Boczulak, 2016
+	/// </author>
 	class Hash
 	{
 		/// <summary>
-		/// Gets the resulting hash string from the text entered and salt bytes supplied.
-		/// Hashstring returned includes the saltbytes appended at the end.
+		/// Gets the resulting hash string from the text entered and 
+		/// salt bytes supplied. Hashstring returned includes the 
+		/// saltbytes appended at the end.
 		/// </summary>
 		/// <param name="textData"> Data to be hashed. </param>
-		/// <param name="salt"> Bytes for salting data. If null, random salt generated</param>
+		/// <param name="salt"> 
+		/// Bytes for salting data. If null, random salt generated.
+		/// </param>
 		/// <returns></returns>
 		public static string ComputeHash(string textData, byte[] salt = null)
 		{
@@ -58,16 +68,18 @@ namespace AppFinity
 			byte[] saltBytes = new byte[4];	//Four bytes of salt
 			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
 			rng.GetNonZeroBytes(saltBytes);
-			rng.Dispose();		//Dispose of object for security reasons
+			//Dispose of object for security reasons
+			rng.Dispose();	
 			return saltBytes;
 		}
 
 		public static bool Confirm(string textData, string hashValue)
 		{
 			byte[] hashBytes = Convert.FromBase64String(hashValue);
-			int hashSize = 32;	//bytes in SHA 256
+			int hashSize = 32;  //bytes in SHA 256
 
-			//Gets the saltbytes that would've been appended using out hash function
+			//Gets the saltbytes that would've been appended using our
+			//hash function
 			byte[] saltBytes = new byte[hashBytes.Length - hashSize];
 
 			for (int i = 0; i < saltBytes.Length; i++)

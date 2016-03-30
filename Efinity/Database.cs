@@ -10,12 +10,15 @@ using System.Security.Cryptography;
 namespace AppFinity
 {
 	/// <summary>
-	/// Fake database for demo purposes
+	/// Makeshift database for demo purposes only.
 	/// </summary>
+	/// <author>
+	/// Sean Boczulak, 2016
+	/// </author>
 	class Database
 	{
-		public readonly DataTable Version;
-		public readonly DataTable Application;
+		private readonly DataTable Version;
+		private readonly DataTable Application;
 		
 		public Database()
 		{
@@ -56,6 +59,30 @@ namespace AppFinity
 
 			Version.Rows.Add("Flappy Bird", 1, Hash.ComputeHash("Flappy Bird1Data", null));
 			Version.Rows.Add("Flappy Bird", 2, Hash.ComputeHash("Flappy Bird2Data", null));
+		}
+
+		public bool VerifyApplication(string appName, int appVersion, string appData)
+		{
+			foreach (DataRow row in Version.Rows)
+			{
+				if ((string)row["ApplicationName"] == appName && (int)row["VersionNumber"] == appVersion && Hash.Confirm(appData, (string)row["HashKey"]))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public bool SupportsApplication(string appName)
+		{
+			foreach (DataRow row in Application.Rows)
+			{
+				if ((string)row["ApplicationName"] == appName)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }
